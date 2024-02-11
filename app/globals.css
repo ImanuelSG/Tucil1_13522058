@@ -16,6 +16,63 @@
   }
 }
 
+@font-face {
+  font-family: "cyberpunk";
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  src: url("../public/fonts/Cyberpunk-Regular.ttf") format("truetype");
+}
+
+/* Scrollbar */
+:root {
+  --primary: #f1f1f1;
+  --secondary: rgba(31, 209, 253, 0.4);
+  --tertiary: rgba(31, 209, 253, 0.6);
+}
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: none;
+  border-radius: 0px;
+  width: 0px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #342f1b;
+  border-radius: 14px;
+  border: 3px solid #342f1b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #342f1b;
+}
+.updown-animation {
+  animation-name: infiniteupdown;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+  transition: all 0.1s;
+}
+@keyframes infiniteupdown {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+.small-custom-text-shadow {
+  text-shadow: -0.7px -0.7px 0 #634238, 0 -0.7px 0 #634238,
+    0.7px -0.7px 0 #634238, 0.7px 0 0 #634238, 0.7px 0.7px 0 #634238,
+    0 0.7px 0 #634238, -0.7px 0.7px 0 #634238, -0.7px 0 0 #634238;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -25,9 +82,46 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ecc28c inset !important;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.text-shadow-md {
+  text-shadow: 5px 5px 0px #2d2429;
+}
+.text-shadow-sm {
+  text-shadow: 5px 0px 0px #2d2429;
+}
+
+.custom-text-shadow {
+  text-shadow: -3px -3px 0 #634238, 0 -3px 0 #634238, 3px -3px 0 #634238,
+    3px 0 0 #634238, 3px 3px 0 #634238, 0 3px 0 #634238, -3px 3px 0 #634238,
+    -3px 0 0 #634238;
+}
+.custom-text-shadow-light {
+  text-shadow: -3px -3px 0 #e1dbb9, 0 -3px 0 #e1dbb9, 3px -3px 0 #e1dbb9,
+    3px 0 0 #e1dbb9, 3px 3px 0 #e1dbb9, 0 3px 0 #e1dbb9, -3px 3px 0 #e1dbb9,
+    -3px 0 0 #e1dbb9;
+}
+.custom-text-shadow-active {
+  text-shadow: -3px -3px 0 #eccc9b, 0 -3px 0 #eccc9b, 3px -3px 0 #eccc9b,
+    3px 0 0 #eccc9b, 3px 3px 0 #eccc9b, 0 3px 0 #eccc9b, -3px 3px 0 #eccc9b,
+    -3px 0 0 #eccc9b;
+}
+
+.on-background-contrast {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
+    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
+    var(--tw-sepia) var(--tw-drop-shadow)
+    drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
 }
