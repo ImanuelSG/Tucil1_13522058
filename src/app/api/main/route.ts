@@ -4,7 +4,9 @@ import { spawn } from "child_process";
 export const POST = async (req: NextRequest): Promise<void | Response> => {
   const data = JSON.stringify(await req.json()); // Convert data to JSON string
   return new Promise((resolve, reject) => {
-    const cppProcess = spawn("src/app/api/main/tes.exe", [data]);
+    const isDevelopment = process.env.NODE_ENV === "development";
+    const path = isDevelopment ? "src/app/api/main/tes.exe" : "./tes.exe";
+    const cppProcess = spawn(path, [data]);
     let output = "";
     let error = "";
 
