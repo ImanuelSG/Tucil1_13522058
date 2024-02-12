@@ -256,7 +256,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Buffer Size"
-                      className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-yellow-200 p-2 rounded-md"
                       value={bufferSize}
                       onChange={(e) => setBufferSize(Number(e.target.value))}
                     />
@@ -267,7 +267,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Matrix Row"
-                      className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-yellow-200 p-2 rounded-md"
                       value={matrixRow}
                       onChange={(e) => setMatrixRow(Number(e.target.value))}
                     />
@@ -281,7 +281,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Matrix Column"
-                      className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-yellow-200 p-2 rounded-md"
                       value={matrixCol}
                       onChange={(e) => setMatrixCol(Number(e.target.value))}
                     />
@@ -295,7 +295,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Sequences Max Length"
-                      className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-yellow-200 p-2 rounded-md"
                       value={sequenceLength}
                       onChange={(e) =>
                         setSequenceLength(Number(e.target.value))
@@ -312,7 +312,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Number of Sequence"
-                      className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-yellow-200 p-2 rounded-md"
                       value={sequencenum}
                       onChange={(e) => setSequencenum(Number(e.target.value))}
                     />
@@ -325,7 +325,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Number Unique Tokens"
-                      className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-yellow-200 p-2 rounded-md"
                       value={uniqueLength}
                       onChange={(e) => setuniqueLength(Number(e.target.value))}
                     />
@@ -342,7 +342,7 @@ export default function InputForm() {
                           required
                           type="text"
                           placeholder={`Token ${index + 1}`}
-                          className=" text-gray-800 bg-yellow-200 p-2 rounded-md"
+                          className=" text-black bg-yellow-200 p-2 rounded-md"
                           value={sequenceTokens[index]}
                           onChange={(e) => {
                             const updatedTokens = [...sequenceTokens];
@@ -453,9 +453,9 @@ export default function InputForm() {
           <>
             {/*@ts-ignore*/}
             {reward > 0 ? (
-              <div ref={resultRef} className="">
+              <div ref={resultRef} className="font-mono">
                 <center>
-                  <div className="flex flex-row gap-4 justify-center items-center">
+                  <div className="flex flex-row gap-4 justify-center items-center font-mono">
                     <h2 className="text-xl my-10">Maximum Reward : {reward}</h2>
                     <div className="border-l border-gray-400 h-20"></div>{" "}
                     <h2 className="text-xl my-10">
@@ -494,7 +494,7 @@ export default function InputForm() {
                                 required
                                 disabled
                                 type="text"
-                                value={`${token.identifier} ${
+                                value={`${token.identifier}${
                                   points?.some(
                                     (p) =>
                                       p.kolom === colIndex &&

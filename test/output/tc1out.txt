@@ -1,0 +1,28 @@
+Your Matrix : 
+
+1C 55 55 55 E9 1C
+E9 BD 55 7A BD 7A
+55 E9 55 E9 7A E9
+E9 E9 55 BD 1C 7A
+1C 1C BD 55 1C 1C
+7A E9 E9 BD 55 BD
+
+Your Sequences : 
+
+7A 1C
+Prize: 23
+1C 55 1C
+Prize: 23
+1C BD BD 55
+Prize: 34
+
+Maximum Reward: 57
+Winning Sequence: 1C 7A 1C BD BD 55 
+Path:  
+(6, 1)
+(6, 4)
+(5, 4)
+(5, 2)
+(2, 2)
+(2, 1)
+Time Elapsed: 166 ms

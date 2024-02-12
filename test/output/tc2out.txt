@@ -1,0 +1,22 @@
+Your Matrix : 
+
+1C 55 55 55 E9
+E9 BD 55 7A BD
+55 E9 55 E9 7A
+E9 E9 55 BD 1C
+1C 1C BD 55 1C
+7A E9 E9 BD 55
+
+Your Sequences : 
+
+EF GH
+Prize: 23
+IJ KL MN
+Prize: 23
+OP QR ST TU
+Prize: 34
+
+Maximum Reward: 0
+Winning Sequence: 
+Path:  
+Time Elapsed: 108 ms

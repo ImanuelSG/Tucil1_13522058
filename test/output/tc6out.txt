@@ -1,0 +1,27 @@
+Your Matrix : 
+
+BF E9 HF E9 HF EL
+HF EL E9 BF E9 EL
+HF EL EL EL EL EL
+E9 BF EL BF BF EL
+E9 HF E9 HF HF E9
+E9 HF BF HF E9 E9
+
+Your Sequences : 
+
+BF E9 BF
+Prize: 0
+EL EL E9 BF
+Prize: 40
+E9 BF
+Prize: 25
+
+Maximum Reward: 65
+Winning Sequence: E9 EL EL E9 BF 
+Path:  
+(2, 1)
+(2, 2)
+(6, 2)
+(6, 6)
+(3, 6)
+Time Elapsed: 14 ms

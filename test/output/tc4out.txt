@@ -1,0 +1,29 @@
+Your Matrix : 
+
+9A 66 E9 E9 1C
+66 9A 1C 9A E9
+66 1C 1C 66 E9
+BD 1C 9A 1C 66
+BD 66 BD 9A 1C
+1C 66 66 9A 66
+BD 1C 9A 1C 66
+9A 66 E9 E9 1C
+
+Your Sequences : 
+
+BD E9 1C
+Prize: 40
+BD 9A BD
+Prize: 21
+BD 1C BD 66
+Prize: 15
+
+Maximum Reward: 40
+Winning Sequence: 9A BD BD E9 1C 
+Path:  
+(1, 1)
+(1, 5)
+(3, 5)
+(3, 8)
+(5, 8)
+Time Elapsed: 358 ms

@@ -1,0 +1,31 @@
+Your Matrix : 
+
+A1 G9 EE EE 1C G9 A1 G9 EE EE
+1C G9 A1 G9 G9 G9 1C A1 EE G9
+G9 A1 EE G9 G9 1C 1C G9 EE BD
+BD BD 1C A1 1C G9 BD BD 1C A1
+1C BD BD G9 BD A1 1C 1C EE BD
+BD G9 1C G9 G9 A1 G9 A1 A1 G9
+A1 1C 1C EE 1C A1 A1 G9 1C 1C
+EE EE G9 G9 A1 G9 1C 1C EE EE
+A1 G9 EE EE 1C G9 A1 G9 EE EE
+1C G9 A1 G9 G9 G9 1C A1 EE G9
+
+Your Sequences : 
+
+BD A1 BD
+Prize: 20
+BD 1C BD G9
+Prize: 30
+
+Maximum Reward: 50
+Winning Sequence: G9 BD A1 BD 1C BD G9 
+Path:  
+(2, 1)
+(2, 4)
+(10, 4)
+(10, 5)
+(1, 5)
+(1, 6)
+(2, 6)
+Time Elapsed: 15326 ms

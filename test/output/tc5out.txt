@@ -1,0 +1,23 @@
+Your Matrix : 
+
+A1 A1 A1 A1 A1
+A1 A1 A1 A1 A1
+A1 A1 A1 A1 A1
+A1 A1 A1 A1 A1
+A1 A1 A1 A1 A1
+
+Your Sequences : 
+
+A1 A1 A1 A1 A1
+Prize: 50
+A1 A1 A1
+Prize: -200
+A1 A1
+Prize: 30
+
+Maximum Reward: 30
+Winning Sequence: A1 A1 
+Path:  
+(2, 1)
+(2, 2)
+Time Elapsed: 42 ms
