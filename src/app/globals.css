@@ -21,7 +21,7 @@
   font-weight: normal;
   font-style: normal;
   font-display: swap;
-  src: url("../../public/fonts/Cyberpunk-Regular.ttf") format("truetype");
+  src: url("../../public/fonts/Cyberpunk-Regular.otf") format("opentype");
 }
 
 /* Scrollbar */

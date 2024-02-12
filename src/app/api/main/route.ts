@@ -3,7 +3,6 @@ import { spawn } from "child_process";
 
 export const POST = async (req: NextRequest) => {
   const data = JSON.stringify(await req.json()); // Convert data to JSON string
-
   return new Promise((resolve, reject) => {
     const cppProcess = spawn("src/app/api/main/tes.exe", [data]);
     let output = "";

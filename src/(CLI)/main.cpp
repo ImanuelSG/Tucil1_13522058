@@ -1,7 +1,6 @@
 #include <iostream>
 #include "helpers.h"
 
-
 int main()
 {
     srand(time(NULL));
@@ -13,12 +12,13 @@ int main()
     while (firstans != 'y' && firstans != 'n')
     {
         cout << "Input anda tidak sesuai, coba lagi!" << endl;
-        cout << "Apkakah anda ingin menggunakan random generator? (y/n) ";
+        cout << "Apakah anda ingin menggunakan random generator? (y/n) ";
         cin >> firstans;
     }
     if (firstans == 'y')
     {
-       cout<<"Masukkan jumlah baris : ";
+        cout << "Masukkan jumlah token : ";
+        cin >> info.matrix.row;
     }
     else
     {
@@ -85,5 +85,3 @@ int main()
     }
     return 0;
 }
-
-

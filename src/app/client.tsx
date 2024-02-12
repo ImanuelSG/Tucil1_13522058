@@ -37,7 +37,7 @@ export default function InputForm() {
   }
 
   const handleSave = (filename: string) => {
-    let matrix = "Your Matrix : \n";
+    let matrix = "Your Matrix : \n\n";
     if (matrixCol)
       matrixElements?.forEach((row) => {
         row.forEach((token) => {
@@ -46,7 +46,7 @@ export default function InputForm() {
             : (matrix += token.identifier + " ");
         });
       });
-    let seqprint = "Your Sequences : \n";
+    let seqprint = "\nYour Sequences : \n\n";
     sequences?.forEach((sequence) => {
       sequence.tokens.forEach((token) => {
         sequence.tokens.indexOf(token) == sequence.tokens.length - 1
@@ -56,7 +56,7 @@ export default function InputForm() {
       });
     });
     matrix += seqprint;
-    let dataToSave = `Maximum Reward: ${reward}\nWinning Sequence: ${sequence}\n`;
+    let dataToSave = `\nMaximum Reward: ${reward}\nWinning Sequence: ${sequence}\n`;
     let paths = "Path:  ";
     points?.forEach((point) => {
       paths += `\n(${point.kolom + 1}, ${point.baris + 1})`;
@@ -70,6 +70,7 @@ export default function InputForm() {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
+    console.log(matrixElements);
 
     // Serialize the input data into a JSON-like string
     const jsonString = JSON.stringify({
@@ -81,6 +82,7 @@ export default function InputForm() {
       },
       sequences: sequences,
     });
+    console.log(jsonString);
 
     const response = await fetch("/api/main", {
       method: "POST",
@@ -137,9 +139,23 @@ export default function InputForm() {
       !matrixCol ||
       !sequencenum ||
       !uniqueLength
-    )
+    ) {
+      toast.error("Please fill all the fields");
       return;
-
+    }
+    const updatedTokens = [...sequenceTokens];
+    let condition = false;
+    updatedTokens.forEach((token, index) => {
+      if (!/^[a-zA-Z0-9]{2}$/.test(token)) {
+        updatedTokens[index] = "";
+        setSequenceTokens(updatedTokens);
+        condition = true;
+      }
+    });
+    if (condition) {
+      toast.error("Invalid token");
+      return;
+    }
     const { matrix, sequence } = randomizeInput(
       sequenceLength,
       sequenceTokens,
@@ -147,7 +163,7 @@ export default function InputForm() {
       matrixCol,
       sequencenum
     );
-    console.log(matrix, sequence);
+
     setMatrixElements(matrix.element);
     setSequences(sequence);
     setResult(false);
@@ -160,14 +176,20 @@ export default function InputForm() {
     const reader = new FileReader();
     reader.onload = () => {
       const content = reader.result;
-      const parsed = readTxt(content);
-      setBufferSize(Number(parsed.buffer_size));
-      setMatrixCol(parsed.matrix.col);
-      setMatrixRow(parsed.matrix.row);
-      setMatrixElements(parsed.matrix.element);
-      setSequences(parsed.sequences);
-
+      try {
+        const parsed = readTxt(content);
+        setBufferSize(Number(parsed.buffer_size));
+        setMatrixCol(parsed.matrix.col);
+        setMatrixRow(parsed.matrix.row);
+        setMatrixElements(parsed.matrix.element);
+        setSequences(parsed.sequences);
+      } catch (error: any) {
+        toast.error("Invalid file format :" + error.message);
+        return;
+      }
       setVerified(true);
+      setResult(false);
+      setResultMethod(undefined);
     };
     reader.readAsText(file);
   };
@@ -208,17 +230,19 @@ export default function InputForm() {
       </div>
       <center>
         {method === "txt" ? (
-          <>
-            <input
-              required
-              type="file"
-              id="file"
-              name="file"
-              accept=".txt"
-              className="mt-10"
-              onChange={handleFileChange}
-            />
-          </>
+          <div className="items-center justify-center relative">
+            
+              <input
+                required
+                type="file"
+                id="file"
+                name="file"
+                accept=".txt"
+                className="mt-10 pl-20"
+                onChange={handleFileChange}
+              />
+            
+          </div>
         ) : (
           method === "RANDOM" && (
             <>
@@ -322,7 +346,9 @@ export default function InputForm() {
                           value={sequenceTokens[index]}
                           onChange={(e) => {
                             const updatedTokens = [...sequenceTokens];
-                            updatedTokens[index] = e.target.value;
+                            const token = e.target.value;
+
+                            updatedTokens[index] = token;
                             setSequenceTokens(updatedTokens);
                           }}
                         />
@@ -344,7 +370,7 @@ export default function InputForm() {
         {matrixElements &&
           verified &&
           (!resultMethod || resultMethod === method) && (
-            <div className="relative font-serif justify-center items-center mb-20">
+            <div className="relative  justify-center items-center mb-20">
               <center>
                 <h2 className="text-3xl my-10">Your Matrix : </h2>
                 <table className="bg-[#24ad54] p-10">
@@ -363,7 +389,7 @@ export default function InputForm() {
                                 height: "70px",
                                 padding: "5px",
                               }}
-                              className="text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
+                              className="font-mono text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
                               onChange={(e) =>
                                 handleMatrixChange(
                                   rowIndex,
@@ -381,7 +407,7 @@ export default function InputForm() {
               </center>
               <center>
                 <h2 className="text-3xl my-10">Your Sequences :</h2>
-                <ul>
+                <ul className="font-mono">
                   {sequences.map((sequence, sequenceIndex) => (
                     <li key={sequenceIndex}>
                       Sequence {sequenceIndex + 1} : prize {sequence.prize}{" "}
@@ -398,7 +424,7 @@ export default function InputForm() {
                                 height: "70px",
                                 padding: "5px",
                               }}
-                              className="text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
+                              className="font-mono text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
                               onChange={(e) =>
                                 handleSequenceChange(
                                   sequenceIndex,
@@ -427,7 +453,7 @@ export default function InputForm() {
           <>
             {/*@ts-ignore*/}
             {reward > 0 ? (
-              <div ref={resultRef} className="font-serif">
+              <div ref={resultRef} className="">
                 <center>
                   <div className="flex flex-row gap-4 justify-center items-center">
                     <h2 className="text-xl my-10">Maximum Reward : {reward}</h2>
@@ -440,7 +466,7 @@ export default function InputForm() {
                     {/* Grey fence */}
                     <h2 className="text-xl my-10">Time Elapsed : {time}</h2>
                   </div>
-                  <div className="w-full font-serif justify-center items-center">
+                  <div className="w-full  justify-center items-center">
                     <h2 className="text-3xl my-10">Your Path :</h2>
                     <ul
                       style={{
@@ -540,10 +566,36 @@ export default function InputForm() {
                 </center>
               </div>
             ) : (
-              <div>
+              <div ref={resultRef}>
                 <h1 className="text-6xl text-red-800">
                   No Winning Sequence Found !
                 </h1>
+                <div className="flex flex-col">
+                  <h2 className="text-3xl my-10">Save Your Result?</h2>
+                  <section className="flex flex-row gap-4 justify-center items-center">
+                    <input
+                      required
+                      type="text"
+                      placeholder="Filename"
+                      className="bg-yellow-200 p-2 rounded-md text-black"
+                      value={filename}
+                      onChange={(e) => setFilename(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      disabled={!filename}
+                      className="bg-green-200 p-3 rounded-md  text-black disabled:opacity-70"
+                      //@ts-ignore
+                      onClick={() => handleSave(filename)}
+                    >
+                      {`${
+                        filename
+                          ? "Save to File"
+                          : "Please input filename first"
+                      }`}
+                    </button>
+                  </section>
+                </div>
               </div>
             )}
           </>
