@@ -30,3 +30,7 @@ If the program already contains a complete set of Next.js JavaScript code, it us
 3. Run the command `npm run dev` to start the Next.js server.
 4. Open a web browser and visit `http://localhost:3000` to access the application.
 5. Use the application interface to perform the desired actions (replace with specific usage instructions for your program).
+
+## Identity
+
+This program was fully made by Imanuel Sebastian Girsang 13522058
