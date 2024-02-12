@@ -77,7 +77,6 @@ void printToken(Token token);
  * @param sequence
  */
 void printTokens(vector<Token> tokens);
-
 /**
  * @brief Prosedur untuk mencetak kumpulan Sekuens ke layar
  *
@@ -95,7 +94,6 @@ void printResult(int diff);
  * @param filename
  * @param info
  */
-
 void readTxt(string filename, Info *info);
 /**
  * @brief Prosedur untuk membaca file random dan memasukkannya ke variabel Info
@@ -128,9 +126,7 @@ Sequence appendToken(Sequence sequence, Token token);
  * @param col
  * @return Token
  */
-
 Token generateToken(string identifier, int row, int col);
-
 /**
  * @brief Mendapatkan Token dari matriks pada posisi row,col
  *
@@ -140,7 +136,6 @@ Token generateToken(string identifier, int row, int col);
  * @return Token
  */
 Token getToken(Matrix matrix, int row, int col);
-
 /**
  * @brief Function untuk mengevaluasi nilai sebuah sequence bila dibandingkan dengan kumpulan sekuens berhadiah
  *
@@ -149,7 +144,6 @@ Token getToken(Matrix matrix, int row, int col);
  * @return int
  */
 int evaluateSequence(Sequence sequence, vector<Sequence> sequences);
-
 /**
  * @brief Function untuk menentukan apakah suatu point sudah pernah dikunjungi atau belum
  *

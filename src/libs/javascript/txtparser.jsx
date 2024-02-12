@@ -1,51 +1,100 @@
 export default function readTxt(content) {
-  const data = content.split("\n");
-  let info = {
-    buffer_size: parseInt(data[0]),
-    matrix: {
-      element: [],
-      row: 0,
-      col: 0,
-    },
-    sequences: [],
-  };
-  const matrixSize = data[1].split(" ");
-  info.matrix.row = parseInt(matrixSize[0]);
-  info.matrix.col = parseInt(matrixSize[1]);
-  for (let i = 0; i < info.matrix.row; i++) {
-    const row = data[2 + i];
-    const rowTokens = [];
-    for (let j = 0; j < info.matrix.col; j++) {
-      const token = {
-        identifier: row.substr(j * 3, 2),
-        position: { baris: i, kolom: j },
-      };
-      rowTokens.push(token);
+  const lines = content.split("\n");
+
+  // Validate input content
+  if (lines.length < 5) {
+    throw new Error("Invalid input format. Not enough lines.");
+  }
+
+  // Parse buffer size
+  const bufferSize = parseInt(lines[0]);
+  if (isNaN(bufferSize)) {
+    throw new Error("Invalid buffer size.");
+  }
+
+  // Parse matrix size
+  const matrixSize = lines[1].split(" ");
+  if (matrixSize.length !== 2) {
+    throw new Error("Invalid matrix size format.");
+  }
+  const matrixRows = parseInt(matrixSize[0]);
+  const matrixCols = parseInt(matrixSize[1]);
+  if (isNaN(matrixRows) || isNaN(matrixCols)) {
+    throw new Error("Invalid matrix size.");
+  }
+
+  // Parse matrix elements
+  const matrixElements = [];
+  for (let i = 0; i < matrixRows; i++) {
+    const rowLine = lines[2 + i];
+    if (rowLine.length !== matrixCols * 3) {
+      throw new Error("Invalid matrix element format.");
     }
-    info.matrix.element.push(rowTokens);
+    const rowTokens = [];
+    for (let j = 0; j < matrixCols; j++) {
+      const token = rowLine.substr(j * 3, 2);
+      if (!/^[a-zA-Z0-9]{2}$/.test(token)) {
+        throw new Error("Invalid token format in matrix.");
+      }
+      rowTokens.push({
+        identifier: token,
+        position: { baris: i, kolom: j },
+      });
+    }
+    matrixElements.push(rowTokens);
   }
 
   // Parse sequences
-  let index = 2 + info.matrix.row;
-  const numSequences = parseInt(data[index]);
+  const sequences = [];
+  let index = 2 + matrixRows;
+  const numSequences = parseInt(lines[index]);
+  if (isNaN(numSequences)) {
+    throw new Error("Invalid number of sequences.");
+  }
   for (let i = 0; i < numSequences; i++) {
     index++;
-    const sequenceTokens = data[index].match(/.{1,3}/g);
-    const tokens = sequenceTokens.map((token) => ({
-      identifier: token.substring(0, 2),
-      position: {
-        baris: 0,
-        kolom: 0,
-      },
-    }));
-    const sequence = {
+    const sequenceLine = lines[index];
+    if (sequenceLine.length % 3 !== 0) {
+      throw new Error("Invalid sequence format.");
+    }
+    const sequenceTokens = sequenceLine
+      .split(" ")
+      .filter((token) => token.trim());
+    const lastTokenIndex = sequenceTokens.length - 1;
+    sequenceTokens[lastTokenIndex] = sequenceTokens[lastTokenIndex].replace(
+      /\r/g,
+      ""
+    );
+    console.log(sequenceTokens);
+    const tokens = sequenceTokens.map((token) => {
+      if (!/^[a-zA-Z0-9]{2}$/.test(token)) {
+        throw new Error("Invalid token format in sequence.");
+      }
+      return {
+        identifier: token,
+        position: { baris: 0, kolom: 0 },
+      };
+    });
+    const prizeLine = lines[index + 1];
+    const prize = parseInt(prizeLine);
+    if (isNaN(prize)) {
+      throw new Error("Invalid prize value.");
+    }
+    sequences.push({
       tokens: tokens,
       length: tokens.length,
-      prize: parseInt(data[index + 1]),
-    };
-    info.sequences.push(sequence);
+      prize: prize,
+    });
     index++;
   }
 
-  return info;
+  return {
+    buffer_size: bufferSize,
+    matrix: {
+      element: matrixElements,
+      row: matrixRows,
+      col: matrixCols,
+    },
+    sequences: sequences,
+  };
 }
