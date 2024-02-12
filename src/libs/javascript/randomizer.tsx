@@ -1,4 +1,4 @@
-import type { matrix, sequence, Tokens } from "@/app/types/main";
+import type { matrix, sequence, Tokens } from "../../app/types/main";
 type Result = {
   sequence: sequence[];
   matrix: matrix;

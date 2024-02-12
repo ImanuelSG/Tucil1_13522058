@@ -36,20 +36,6 @@ int main(int argc, char const *argv[])
     srand(time(NULL));
     Info info;
     string JSONString = string(argv[1]);
-    // string JSONString = R"({
-    //     "buffer_size": "10",
-    //     "matrix": {
-    //         "element": [[{ "identifier": "A", "position": { "baris": "0", "kolom": "0" } }]],
-    //         "row": "1",
-    //         "col": "1"
-    //     },
-    //     "sequences": [{
-    //         "tokens": [{ "identifier": "A", "position": { "baris": "0", "kolom": "0" } }],
-    //         "length": "1",
-    //         "prize": "100"
-    //     }]
-    // })";
-
     json j = json::parse(JSONString);
 
     info = ParseJSON(j);

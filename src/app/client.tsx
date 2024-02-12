@@ -1,10 +1,9 @@
 "use client";
 import { useRef, useState } from "react";
-
-import { FieldValues, set, useForm } from "react-hook-form";
 import readTxt from "../libs/javascript/txtparser";
 import type { Point, Tokens, sequence } from "../app/types/main";
-import randomizeInput from "@/libs/javascript/randomizer";
+import randomizeInput from "../libs/javascript/randomizer";
+import toast from "react-hot-toast";
 export default function InputForm() {
   const [method, setMethod] = useState("txtfile");
   const [bufferSize, setBufferSize] = useState<number>();
@@ -23,25 +22,51 @@ export default function InputForm() {
   const [sequencenum, setSequencenum] = useState<number>();
   const [sequenceTokens, setSequenceTokens] = useState<string[]>([]);
   const [uniqueLength, setuniqueLength] = useState<number>();
+  const [filename, setFilename] = useState<string>();
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: {
-      bufferSize: 0,
-      matrixRow: 0,
-      matrixCol: 0,
-      matrixElements: [[{}]],
-      sequences: {
-        tokens: [""],
-        length: "",
-        prize: "",
-      },
-    },
-  });
+  function saveToFile(data: string, filename: string) {
+    const blob = new Blob([data], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const handleSave = (filename: string) => {
+    let matrix = "Your Matrix : \n";
+    if (matrixCol)
+      matrixElements?.forEach((row) => {
+        row.forEach((token) => {
+          token.position.kolom == matrixCol - 1
+            ? (matrix += token.identifier + "\n")
+            : (matrix += token.identifier + " ");
+        });
+      });
+    let seqprint = "Your Sequences : \n";
+    sequences?.forEach((sequence) => {
+      sequence.tokens.forEach((token) => {
+        sequence.tokens.indexOf(token) == sequence.tokens.length - 1
+          ? (seqprint +=
+              token.identifier + "\n" + "Prize: " + sequence.prize + "\n")
+          : (seqprint += token.identifier + " ");
+      });
+    });
+    matrix += seqprint;
+    let dataToSave = `Maximum Reward: ${reward}\nWinning Sequence: ${sequence}\n`;
+    let paths = "Path:  ";
+    points?.forEach((point) => {
+      paths += `\n(${point.kolom + 1}, ${point.baris + 1})`;
+    });
+    let timeElapsed = `\nTime Elapsed: ${time}\n`;
+    dataToSave += paths;
+    dataToSave += timeElapsed;
+    matrix += dataToSave;
+    saveToFile(matrix, filename);
+  };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -88,9 +113,14 @@ export default function InputForm() {
   };
 
   const handleMatrixChange = (row: number, col: number, value: string) => {
+    if (!matrixElements) return;
     const updatedMatrix = [...matrixElements];
 
     if (!updatedMatrix) return;
+    if (/^[A-Za-z0-9]{2}$/.test(value)) {
+      toast.error("Invalid token");
+      return;
+    }
     updatedMatrix[row][col].identifier = value;
     setMatrixElements(updatedMatrix);
   };
@@ -164,7 +194,7 @@ export default function InputForm() {
         </section>
         <section className="flex flex-col">
           <label htmlFor="RANDOM" className="text-md duration-150 ">
-            RANDOM GENERATOR
+            RANDOM
           </label>
           <input
             required
@@ -172,19 +202,6 @@ export default function InputForm() {
             id="RANDOM"
             name="method"
             value="RANDOM"
-            onChange={handleMethodChange}
-          />
-        </section>
-        <section className="flex flex-col">
-          <label htmlFor="directinput" className="text-md duration-150 ">
-            DIRECT
-          </label>
-          <input
-            required
-            type="radio"
-            id="directinput"
-            name="method"
-            value="directinput"
             onChange={handleMethodChange}
           />
         </section>
@@ -324,141 +341,28 @@ export default function InputForm() {
             </>
           )
         )}
-        {matrixElements && verified && (
-          <div className="relative font-serif justify-center items-center mb-20">
-            <center>
-              <h2 className="text-3xl my-10">Your Matrix : </h2>
-              <table className="bg-yellow-200 p-10">
-                <tbody>
-                  {matrixElements.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {row.map((token, colIndex) => (
-                        <td key={colIndex} className="p-5">
-                          <input
-                            required
-                            type="text"
-                            value={token.identifier}
-                            className="text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
-                            onChange={(e) =>
-                              handleMatrixChange(
-                                rowIndex,
-                                colIndex,
-                                e.target.value
-                              )
-                            }
-                          />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </center>
-            <center>
-              <h2 className="text-3xl my-10">Your Sequences :</h2>
-              <ul>
-                {sequences.map((sequence, sequenceIndex) => (
-                  <li key={sequenceIndex}>
-                    Sequence {sequenceIndex + 1} : prize {sequence.prize}{" "}
-                    <ul>
-                      <div className="flex flex-row justify-center">
-                        {sequence.tokens.map((token, tokenIndex) => (
-                          <input
-                            required
-                            type="text"
-                            value={token.identifier}
-                            className="text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
-                            onChange={(e) =>
-                              handleSequenceChange(
-                                sequenceIndex,
-                                tokenIndex,
-                                e.target.value
-                              )
-                            }
-                          />
-                        ))}
-                      </div>
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-              <button
-                className="bg-green-400 p-3 rounded-md mt-10 text-black"
-                onClick={onSubmit}
-              >
-                {" "}
-                Solve Now !
-              </button>
-            </center>
-          </div>
-        )}
-        {result && method === resultMethod && (
-          <>
-            <div ref={resultRef} className="font-serif">
+        {matrixElements &&
+          verified &&
+          (!resultMethod || resultMethod === method) && (
+            <div className="relative font-serif justify-center items-center mb-20">
               <center>
-                <div className="flex flex-row gap-4 justify-center items-center">
-                  <h2 className="text-xl my-10">Maximum Reward : {reward}</h2>
-                  <div className="border-l border-gray-400 h-20"></div>{" "}
-                  <h2 className="text-xl my-10">
-                    Winning Sequence : {sequence}
-                  </h2>
-                  <div className="border-l border-gray-400 h-20"></div>{" "}
-                  {/* Grey fence */}
-                  {/* Grey fence */}
-                  <h2 className="text-xl my-10">Time Elapsed : {time}</h2>
-                </div>
-                <div className="w-full font-serif justify-center items-center">
-                  <h2 className="text-3xl my-10">Your Path :</h2>
-                  <ul
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    {points?.map((point, index) => (
-                      <li key={index} style={{ marginRight: "10px" }}>
-                        ({point.kolom + 1}, {point.baris + 1}){" "}
-                        {`${index + 1}` === `${points.length}` ? "" : " -> "}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <table className="bg-yellow-200 p-10">
+                <h2 className="text-3xl my-10">Your Matrix : </h2>
+                <table className="bg-[#24ad54] p-10">
                   <tbody>
-                    {matrixElements?.map((row, rowIndex) => (
+                    {matrixElements.map((row, rowIndex) => (
                       <tr key={rowIndex}>
                         {row.map((token, colIndex) => (
-                          <td
-                            key={colIndex}
-                            className={`p-5 m-5 ${
-                              points?.some(
-                                (p) =>
-                                  p.kolom === colIndex && p.baris === rowIndex
-                              )
-                                ? "bg-green-400 rounded-full" // Change the background color here
-                                : ""
-                            }`}
-                          >
+                          <td key={colIndex} className="p-5">
                             <input
-                              required
                               disabled
+                              required
                               type="text"
-                              value={`${token.identifier} ${
-                                points?.some(
-                                  (p) =>
-                                    p.kolom === colIndex && p.baris === rowIndex
-                                )
-                                  ? `${"      ("}${
-                                      (points?.findIndex(
-                                        (p) =>
-                                          p.kolom === colIndex &&
-                                          p.baris === rowIndex
-                                      ) || 0) + 1
-                                    } ${")"}`
-                                  : ""
-                              }`}
+                              value={token.identifier}
+                              style={{
+                                width: "70px",
+                                height: "70px",
+                                padding: "5px",
+                              }}
                               className="text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
                               onChange={(e) =>
                                 handleMatrixChange(
@@ -475,7 +379,173 @@ export default function InputForm() {
                   </tbody>
                 </table>
               </center>
+              <center>
+                <h2 className="text-3xl my-10">Your Sequences :</h2>
+                <ul>
+                  {sequences.map((sequence, sequenceIndex) => (
+                    <li key={sequenceIndex}>
+                      Sequence {sequenceIndex + 1} : prize {sequence.prize}{" "}
+                      <ul>
+                        <div className="flex flex-row justify-center">
+                          {sequence.tokens.map((token, tokenIndex) => (
+                            <input
+                              disabled
+                              required
+                              type="text"
+                              value={token.identifier}
+                              style={{
+                                width: "70px",
+                                height: "70px",
+                                padding: "5px",
+                              }}
+                              className="text-yellow-800 bg-green-200 mx-2 my-2 p-2 rounded-md text-center"
+                              onChange={(e) =>
+                                handleSequenceChange(
+                                  sequenceIndex,
+                                  tokenIndex,
+                                  e.target.value
+                                )
+                              }
+                            />
+                          ))}
+                        </div>
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="bg-green-400 p-3 rounded-md mt-10 text-black"
+                  onClick={onSubmit}
+                >
+                  {" "}
+                  Solve Now !
+                </button>
+              </center>
             </div>
+          )}
+        {result && method === resultMethod && (
+          <>
+            {/*@ts-ignore*/}
+            {reward > 0 ? (
+              <div ref={resultRef} className="font-serif">
+                <center>
+                  <div className="flex flex-row gap-4 justify-center items-center">
+                    <h2 className="text-xl my-10">Maximum Reward : {reward}</h2>
+                    <div className="border-l border-gray-400 h-20"></div>{" "}
+                    <h2 className="text-xl my-10">
+                      Winning Sequence : {sequence}
+                    </h2>
+                    <div className="border-l border-gray-400 h-20"></div>{" "}
+                    {/* Grey fence */}
+                    {/* Grey fence */}
+                    <h2 className="text-xl my-10">Time Elapsed : {time}</h2>
+                  </div>
+                  <div className="w-full font-serif justify-center items-center">
+                    <h2 className="text-3xl my-10">Your Path :</h2>
+                    <ul
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        marginBottom: "20px",
+                      }}
+                    >
+                      {points?.map((point, index) => (
+                        <li key={index} style={{ marginRight: "10px" }}>
+                          ({point.kolom + 1}, {point.baris + 1}){" "}
+                          {`${index + 1}` === `${points.length}` ? "" : " -> "}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <table className=" p-10">
+                    <tbody>
+                      {matrixElements?.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((token, colIndex) => (
+                            <td key={colIndex} className={`p-1 m-1`}>
+                              <input
+                                required
+                                disabled
+                                type="text"
+                                value={`${token.identifier} ${
+                                  points?.some(
+                                    (p) =>
+                                      p.kolom === colIndex &&
+                                      p.baris === rowIndex
+                                  )
+                                    ? `${"("}${
+                                        (points?.findIndex(
+                                          (p) =>
+                                            p.kolom === colIndex &&
+                                            p.baris === rowIndex
+                                        ) || 0) + 1
+                                      }${")"}`
+                                    : ""
+                                }`}
+                                style={{
+                                  width: "70px",
+                                  height: "70px",
+                                  padding: "5px",
+                                }}
+                                className={`text-yellow-800 ${
+                                  points?.some(
+                                    (p) =>
+                                      p.kolom === colIndex &&
+                                      p.baris === rowIndex
+                                  )
+                                    ? "bg-green-200"
+                                    : "bg-yellow-300"
+                                } mx-2 my-2 p-2 rounded-md text-center`}
+                                onChange={(e) =>
+                                  handleMatrixChange(
+                                    rowIndex,
+                                    colIndex,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="flex flex-col">
+                    <h2 className="text-3xl my-10">Save Your Result?</h2>
+                    <section className="flex flex-row gap-4 justify-center items-center">
+                      <input
+                        required
+                        type="text"
+                        placeholder="Filename"
+                        className="bg-yellow-200 p-2 rounded-md text-black"
+                        value={filename}
+                        onChange={(e) => setFilename(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        disabled={!filename}
+                        className="bg-green-200 p-3 rounded-md  text-black disabled:opacity-70"
+                        //@ts-ignore
+                        onClick={() => handleSave(filename)}
+                      >
+                        {`${
+                          filename
+                            ? "Save to File"
+                            : "Please input filename first"
+                        }`}
+                      </button>
+                    </section>
+                  </div>
+                </center>
+              </div>
+            ) : (
+              <div>
+                <h1 className="text-6xl text-red-800">
+                  No Winning Sequence Found !
+                </h1>
+              </div>
+            )}
           </>
         )}
       </center>

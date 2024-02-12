@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ToasterProvider from "../providers/toastprovider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-cyberpunk my-20 mx-20">{children}</body>
+      <body className="font-cyberpunk my-20 mx-20">
+        <ToasterProvider />
+        {children}
+      </body>
     </html>
   );
 }

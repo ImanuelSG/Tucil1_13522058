@@ -21,7 +21,7 @@
   font-weight: normal;
   font-style: normal;
   font-display: swap;
-  src: url("../public/fonts/Cyberpunk-Regular.ttf") format("truetype");
+  src: url("../../public/fonts/Cyberpunk-Regular.ttf") format("truetype");
 }
 
 /* Scrollbar */
@@ -93,6 +93,7 @@ input::-webkit-inner-spin-button {
 
 /* Firefox */
 input[type="number"] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
