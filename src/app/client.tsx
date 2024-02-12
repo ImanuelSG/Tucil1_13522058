@@ -101,6 +101,8 @@ export default function InputForm() {
 
     // Handle the response as needed
     const data = await response.json();
+    if (!data.output)
+      toast.error("Error while solving the problem", { id: toastId });
     const json = JSON.parse(data.output);
     if (json) {
       setResult(true);

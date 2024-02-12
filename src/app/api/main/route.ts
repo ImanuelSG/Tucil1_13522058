@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest): Promise<void | Response> => {
     });
 
     cppProcess.on("error", (err) => {
-      reject(err); // Reject the promise if there's an error with the child process
+      reject(NextResponse.json({ data }, { status: 500 })); // Reject the promise if there's an error with the child process
     });
   });
 };
