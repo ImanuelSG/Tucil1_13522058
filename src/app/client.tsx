@@ -347,7 +347,10 @@ export default function InputForm() {
                 {uniqueLength && uniqueLength > 0 && (
                   <div className="flex flex-row justify-center font-mono mt-10 items-center">
                     {Array.from({ length: uniqueLength }).map((_, index) => (
-                      <section className="flex flex-row items-center ">
+                      <section
+                        key={index}
+                        className="flex flex-row items-center "
+                      >
                         <label className="text-white-800 mx-10">
                           Token {index + 1} :
                         </label>
@@ -428,6 +431,7 @@ export default function InputForm() {
                         <div className="flex flex-row justify-center">
                           {sequence.tokens.map((token, tokenIndex) => (
                             <input
+                              key={tokenIndex}
                               disabled
                               required
                               type="text"
