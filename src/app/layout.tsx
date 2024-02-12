@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ToasterProvider from "../providers/toastprovider";
-
+import photo from "../../public/bg.jpg";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,7 +17,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-cyberpunk my-20 mx-20">
+      <body
+        className="font-cyberpunk my-20 mx-20"
+        style={{
+          height: "100vh",
+          backgroundImage: `url(${photo.src})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Set the opacity here (0.5 is 50% opacity)
+          backgroundBlendMode: "multiply", // Apply blend mode for soft transition
+        }}
+      >
         <ToasterProvider />
         {children}
       </body>

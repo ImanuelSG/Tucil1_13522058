@@ -10,7 +10,6 @@ export const POST = async (req: NextRequest) => {
 
     cppProcess.stdout.on("data", (data) => {
       output += data.toString();
-      console.log(output);
     });
 
     cppProcess.stderr.on("data", (data) => {

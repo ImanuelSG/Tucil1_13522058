@@ -23,6 +23,8 @@ export default function InputForm() {
   const [sequenceTokens, setSequenceTokens] = useState<string[]>([]);
   const [uniqueLength, setuniqueLength] = useState<number>();
   const [filename, setFilename] = useState<string>();
+  const [loading, setLoading] = useState(false);
+
   const resultRef = useRef<HTMLDivElement>(null);
 
   function saveToFile(data: string, filename: string) {
@@ -37,6 +39,10 @@ export default function InputForm() {
   }
 
   const handleSave = (filename: string) => {
+    if (!filename) {
+      toast.error("Please input filename first");
+      return;
+    }
     let matrix = "Your Matrix : \n\n";
     if (matrixCol)
       matrixElements?.forEach((row) => {
@@ -70,7 +76,12 @@ export default function InputForm() {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(matrixElements);
+    if (!bufferSize || !matrixElements || !sequences) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+    setLoading(true);
+    const toastId = toast.loading("Solving the problem...");
 
     // Serialize the input data into a JSON-like string
     const jsonString = JSON.stringify({
@@ -82,7 +93,6 @@ export default function InputForm() {
       },
       sequences: sequences,
     });
-    console.log(jsonString);
 
     const response = await fetch("/api/main", {
       method: "POST",
@@ -99,6 +109,11 @@ export default function InputForm() {
       setreward(json.maximum_reward);
       setsequence(json.sequence);
       setResultMethod(method);
+      setLoading(false);
+      toast.success("Problem solved!", { id: toastId });
+    } else {
+      setLoading(false);
+      toast.error("Error while solving the problem", { id: toastId });
     }
 
     setTimeout(() => {
@@ -163,7 +178,7 @@ export default function InputForm() {
       matrixCol,
       sequencenum
     );
-
+    setResultMethod(undefined);
     setMatrixElements(matrix.element);
     setSequences(sequence);
     setResult(false);
@@ -231,17 +246,15 @@ export default function InputForm() {
       <center>
         {method === "txt" ? (
           <div className="items-center justify-center relative">
-            
-              <input
-                required
-                type="file"
-                id="file"
-                name="file"
-                accept=".txt"
-                className="mt-10 pl-20"
-                onChange={handleFileChange}
-              />
-            
+            <input
+              required
+              type="file"
+              id="file"
+              name="file"
+              accept=".txt"
+              className="mt-10 pl-20"
+              onChange={handleFileChange}
+            />
           </div>
         ) : (
           method === "RANDOM" && (
@@ -256,7 +269,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Buffer Size"
-                      className=" text-black bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-slate-400 p-2 rounded-md"
                       value={bufferSize}
                       onChange={(e) => setBufferSize(Number(e.target.value))}
                     />
@@ -267,7 +280,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Matrix Row"
-                      className=" text-black bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-slate-400 p-2 rounded-md"
                       value={matrixRow}
                       onChange={(e) => setMatrixRow(Number(e.target.value))}
                     />
@@ -281,7 +294,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Matrix Column"
-                      className=" text-black bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-slate-400 p-2 rounded-md"
                       value={matrixCol}
                       onChange={(e) => setMatrixCol(Number(e.target.value))}
                     />
@@ -295,7 +308,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Sequences Max Length"
-                      className=" text-black bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-slate-400 p-2 rounded-md"
                       value={sequenceLength}
                       onChange={(e) =>
                         setSequenceLength(Number(e.target.value))
@@ -312,7 +325,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Number of Sequence"
-                      className=" text-black bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-slate-400 p-2 rounded-md"
                       value={sequencenum}
                       onChange={(e) => setSequencenum(Number(e.target.value))}
                     />
@@ -325,7 +338,7 @@ export default function InputForm() {
                       required
                       type="number"
                       placeholder="Number Unique Tokens"
-                      className=" text-black bg-yellow-200 p-2 rounded-md"
+                      className=" text-black bg-slate-400 p-2 rounded-md"
                       value={uniqueLength}
                       onChange={(e) => setuniqueLength(Number(e.target.value))}
                     />
@@ -342,7 +355,7 @@ export default function InputForm() {
                           required
                           type="text"
                           placeholder={`Token ${index + 1}`}
-                          className=" text-black bg-yellow-200 p-2 rounded-md"
+                          className=" text-black bg-slate-400 p-2 rounded-md"
                           value={sequenceTokens[index]}
                           onChange={(e) => {
                             const updatedTokens = [...sequenceTokens];
@@ -442,6 +455,7 @@ export default function InputForm() {
                 <button
                   className="bg-green-400 p-3 rounded-md mt-10 text-black"
                   onClick={onSubmit}
+                  disabled={loading}
                 >
                   {" "}
                   Solve Now !
@@ -538,13 +552,13 @@ export default function InputForm() {
                     </tbody>
                   </table>
                   <div className="flex flex-col">
-                    <h2 className="text-3xl my-10">Save Your Result?</h2>
-                    <section className="flex flex-row gap-4 justify-center items-center">
+                    <h2 className="text-3xl my-20">Save Your Result?</h2>
+                    <section className="flex flex-row gap-4 justify-center items-center mb-20">
                       <input
                         required
                         type="text"
                         placeholder="Filename"
-                        className="bg-yellow-200 p-2 rounded-md text-black"
+                        className="bg-slate-400 p-2 rounded-md text-black"
                         value={filename}
                         onChange={(e) => setFilename(e.target.value)}
                       />
@@ -571,13 +585,13 @@ export default function InputForm() {
                   No Winning Sequence Found !
                 </h1>
                 <div className="flex flex-col">
-                  <h2 className="text-3xl my-10">Save Your Result?</h2>
-                  <section className="flex flex-row gap-4 justify-center items-center">
+                  <h2 className="text-3xl my-20 ">Save Your Result?</h2>
+                  <section className="flex flex-row gap-4 justify-center items-center mb-20">
                     <input
                       required
                       type="text"
                       placeholder="Filename"
-                      className="bg-yellow-200 p-2 rounded-md text-black"
+                      className="bg-slate-400 p-2 rounded-md text-black"
                       value={filename}
                       onChange={(e) => setFilename(e.target.value)}
                     />
