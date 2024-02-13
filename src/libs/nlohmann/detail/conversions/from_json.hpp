@@ -20,7 +20,7 @@
 #include <utility>       // pair, declval
 #include <valarray>      // valarray
 
-#include "../exceptions.hpp.."
+#include "../exceptions.hpp"
 #include "../macro_scope.hpp"
 #include "../meta/cpp_future.hpp"
 #include "../meta/identity_tag.hpp"
